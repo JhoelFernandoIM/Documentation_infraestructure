@@ -46,6 +46,26 @@ def obtener_interesados():
     return response.data
 
 
+#INTERESADOS
+
 def obtener_interesados_full():
     supabase = get_supabase_client()
     return supabase.table("remitente").select("*").execute().data
+
+def obtener_personal_obra_full():
+    supabase = get_supabase_client()
+    return supabase.table("personal_obra") \
+        .select("id_personal_obra, rol_obra, remitente(nombre_rs, telefono), obra(nombre_obra)") \
+        .execute().data
+
+def obtener_area_municipal_full():
+    supabase = get_supabase_client()
+    return supabase.table("area_municipal") \
+        .select("id_area, nombre_area, nivel, remitente(nombre_rs, telefono)") \
+        .execute().data
+
+def obtener_externos_full():
+    supabase = get_supabase_client()
+    return supabase.table("entidad_externa") \
+        .select("id_entidad, tipo_entidad, remitente(nombre_rs, telefono)") \
+        .execute().data

@@ -2,7 +2,7 @@ import streamlit as st
 from src.db.supabase_client import *
 import pandas as pd
 
-st.title("Registro de Interesados")
+st.title("🧑‍💼 Registro de Interesados")
 
 obras = obtener_obras_combo()
 obras_dict = {o["nombre_obra"]: o["id_obra"] for o in obras}
@@ -118,14 +118,40 @@ st.dataframe(
     hide_index=True
 )
 
-#botnoes
-col1, col2, col3 = st.columns(3)
+st.divider()
+st.subheader("Vistas detalladas")
 
-if col1.button("Ver personal de obra"):
-    st.session_state.filtro_tipo = "PERSONAL_OBRA"
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Todos",
+    "Personal de obra",
+    "Área municipal",
+    "Externos"
+])
 
-if col2.button("Ver área municipal"):
-    st.session_state.filtro_tipo = "AREA_MUNICIPAL"
+with tab1:
+    st.dataframe(df_filtrado, use_container_width=True, hide_index=True)
 
-if col3.button("Ver externos"):
-    st.session_state.filtro_tipo = "EXTERNO"
+with tab2:
+    personal = obtener_personal_obra_full()
+    if personal:
+        df_po = pd.DataFrame(personal)
+        st.dataframe(df_po, use_container_width=True)
+    else:
+        st.info("No hay personal de obra")
+
+with tab3:
+    area = obtener_area_municipal_full()
+    if area:
+        df_area = pd.DataFrame(area)
+        st.dataframe(df_area, use_container_width=True)
+    else:
+        st.info("No hay áreas registradas")
+
+with tab4:
+    ext = obtener_externos_full()
+    if ext:
+        df_ext = pd.DataFrame(ext)
+        st.dataframe(df_ext, use_container_width=True)
+    else:
+        st.info("No hay entidades externas")
+

@@ -17,3 +17,35 @@ def obtener_obras():
     response = supabase.table("obra").select("*").order("id_obra", desc=True).execute()
     return response.data
 
+#insetar interesados
+def insertar_remitente(data: dict):
+    supabase = get_supabase_client()
+    response = supabase.table("remitente").insert(data).execute()
+    return response.data[0]   # devuelve el registro insertado
+
+def insertar_personal_obra(data: dict):
+    supabase = get_supabase_client()
+    return supabase.table("personal_obra").insert(data).execute()
+
+def insertar_area_municipal(data: dict):
+    supabase = get_supabase_client()
+    return supabase.table("area_municipal").insert(data).execute()
+
+def insertar_entidad_externa(data: dict):
+    supabase = get_supabase_client()
+    return supabase.table("entidad_externa").insert(data).execute()
+
+def obtener_obras_combo():
+    supabase = get_supabase_client()
+    res = supabase.table("obra").select("id_obra,nombre_obra").execute()
+    return res.data
+
+def obtener_interesados():
+    supabase = get_supabase_client()
+    response = supabase.table("remitente").select("*").order("id_interesado", desc=True).execute()
+    return response.data
+
+
+def obtener_interesados_full():
+    supabase = get_supabase_client()
+    return supabase.table("remitente").select("*").execute().data

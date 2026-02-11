@@ -24,7 +24,7 @@ with st.expander("➕ Registrar nueva obra", expanded=True):
             codigo_obra = st.text_input("Código único de inversiones (CUI)")
             tipo_obra = st.selectbox(
                 "Cadena Funcional",
-                ["Transporte", "Educación","Cultura y Deporte", "Saneamiento", "Mantenimiento"]
+                ["Ambiente", "Transporte", "Educación","Cultura y Deporte", "Saneamiento", "Mantenimiento"]
             )
             presupuesto = st.number_input(
                 "Presupuesto (S/.)",

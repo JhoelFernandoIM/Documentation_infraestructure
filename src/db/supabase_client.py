@@ -69,3 +69,67 @@ def obtener_externos_full():
     return supabase.table("entidad_externa") \
         .select("id_entidad, tipo_entidad, remitente(nombre_rs, telefono)") \
         .execute().data
+
+
+#para llenar documentos
+
+def obtener_interesados_combo():
+    supabase = get_supabase_client()
+    return supabase.table("remitente") \
+        .select("id_interesado, nombre_rs, tipo_interesado") \
+        .execute().data
+
+def obtener_area_por_interesado(id_interesado):
+    supabase = get_supabase_client()
+    return supabase.table("area_municipal") \
+        .select("*") \
+        .eq("id_interesado", id_interesado) \
+        .execute().data
+
+def insertar_documento(data):
+    supabase = get_supabase_client()
+    return supabase.table("registro_documentos") \
+        .insert(data) \
+        .execute()
+
+def obtener_areas_por_nivel(nivel):
+    supabase = get_supabase_client()
+    return supabase.table("area_municipal") \
+        .select("*") \
+        .eq("nivel", nivel) \
+        .execute().data
+
+
+#querys para ver documentos registrados
+
+def obtener_documentos_full():
+    supabase = get_supabase_client()
+    return supabase.table("registro_documentos") \
+        .select("""
+            num_asiento,
+            fecha_registro,
+            nombre_doc,
+            remitente (
+                nombre_rs,
+                tipo_interesado,
+                personal_obra (
+                    obra (
+                        nombre_obra
+                    )
+                )
+            )
+        """) \
+        .order("fecha_registro", desc=True) \
+        .execute().data
+
+
+#nueva funcion paa residentes y cargos
+def obtener_personal_obra_por_interesado(id_interesado):
+    supabase = get_supabase_client()
+    return (
+        supabase.table("personal_obra")
+        .select("rol_obra")
+        .eq("id_interesado", id_interesado)
+        .execute()
+        .data
+    )

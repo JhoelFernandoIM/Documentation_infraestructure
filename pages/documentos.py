@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-from src.db.supabase_client import *
+from src.db import supabase_client
 import pandas as pd
 
 st.set_page_config(page_title="Registro de Documentos", layout="wide")
@@ -13,7 +13,7 @@ st.divider()
 
 # selección de interesados
 
-interesados = obtener_interesados_combo()
+interesados = supabase_client.obtener_interesados_combo()
 inter_dict = {i["nombre_rs"]: i for i in interesados}
 
 opciones = ["-- Seleccione interesado --"] + list(inter_dict.keys())
@@ -126,7 +126,7 @@ with st.form("form_documento"):
         sigla_gerencia = "GDTI"
         sigla_subgerencia = "SGI"
 
-        personal = obtener_personal_obra_por_interesado(id_interesado)
+        personal = supabase_client.obtener_personal_obra_por_interesado(id_interesado)
 
         if personal:
             rol = personal[0]["rol_obra"]
@@ -140,7 +140,7 @@ with st.form("form_documento"):
 #si es municipal
     elif tipo_interesado == "AREA_MUNICIPAL":
 
-        areas_funcionario = obtener_area_por_interesado(id_interesado)
+        areas_funcionario = supabase_client.obtener_area_por_interesado(id_interesado)
 
         if areas_funcionario:
 
@@ -170,7 +170,7 @@ with st.form("form_documento"):
             elif nivel_funcionario == 2:
 
                 # Elegir nivel 1
-                areas_n1 = obtener_areas_por_nivel(1)
+                areas_n1 = supabase_client.obtener_areas_por_nivel(1)
                 opciones_n1 = {a["nombre_area"]: a for a in areas_n1}
 
                 nombre_n1 = st.selectbox(
@@ -191,7 +191,7 @@ with st.form("form_documento"):
             elif nivel_funcionario == 3:
 
                 # Elegir nivel 1
-                areas_n1 = obtener_areas_por_nivel(1)
+                areas_n1 = supabase_client.obtener_areas_por_nivel(1)
                 opciones_n1 = {a["nombre_area"]: a for a in areas_n1}
 
                 nombre_n1 = st.selectbox(
@@ -202,7 +202,7 @@ with st.form("form_documento"):
                 sigla_gerencia = generar_sigla(nombre_n1)
 
                 # Elegir nivel 2
-                areas_n2 = obtener_areas_por_nivel(2)
+                areas_n2 = supabase_client.obtener_areas_por_nivel(2)
                 opciones_n2 = {a["nombre_area"]: a for a in areas_n2}
 
                 nombre_n2 = st.selectbox(
@@ -252,7 +252,7 @@ if guardar:
         "nombre_doc": nombre_documento
     }
 
-    insertar_documento(data_doc)
+    supabase_client.insertar_documento(data_doc)
 
     st.success("Documento registrado correctamente")
 
@@ -261,9 +261,9 @@ if guardar:
 st.divider()
 st.subheader("📋 Vista detallada de documentos")
 
-documentos = obtener_documentos_full()
+documentos = supabase_client.obtener_documentos_full()
 
-documentos = obtener_documentos_full()
+documentos = supabase_client.obtener_documentos_full()
 
 if documentos:
     df = pd.DataFrame(documentos)

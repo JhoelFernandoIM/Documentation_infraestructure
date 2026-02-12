@@ -163,15 +163,23 @@ if generar:
     # FECHA EN ESPAÑOL
     # ==============================
 
-    try:
-        locale.setlocale(locale.LC_TIME, "es_PE.UTF-8")
-    except:
-        try:
-            locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
-        except:
-            pass
+    # ==============================
+    # FECHA EN ESPAÑOL (SIN LOCALE)
+    # ==============================
 
-    fecha_actual = fecha_actual_input.strftime("%d de %B de %Y")
+    MESES_ES = {
+        1: "enero", 2: "febrero", 3: "marzo",
+        4: "abril", 5: "mayo", 6: "junio",
+        7: "julio", 8: "agosto", 9: "septiembre",
+        10: "octubre", 11: "noviembre", 12: "diciembre"
+    }
+
+    dia = fecha_actual_input.day
+    mes = MESES_ES[fecha_actual_input.month]
+    anio = fecha_actual_input.year
+
+    fecha_actual = f"{dia} de {mes} de {anio}"
+
 
     numero_doc_fmt = format_4_digits(numero_doc)
     num_pedido_fmt = format_6_digits(num_pedido)

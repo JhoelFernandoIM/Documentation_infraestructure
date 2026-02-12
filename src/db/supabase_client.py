@@ -37,7 +37,7 @@ def insertar_entidad_externa(data: dict):
 
 def obtener_obras_combo():
     supabase = get_supabase_client()
-    res = supabase.table("obra").select("id_obra,nombre_obra").execute()
+    res = supabase.table("obra").select("id_obra,nombre_obra, cui").execute()
     return res.data
 
 def obtener_interesados():
@@ -133,3 +133,23 @@ def obtener_personal_obra_por_interesado(id_interesado):
         .execute()
         .data
     )
+
+#para modulo validacion hoja de coordinacion
+
+def obtener_personal_por_obra(id_obra):
+    supabase = get_supabase_client()
+
+    response = supabase.table("personal_obra") \
+        .select("""
+            rol_obra,
+            remitente:remitente!fk_personal_interesado (
+                nombre_rs,
+                prefijo_prof
+            )
+        """) \
+        .eq("id_obra", id_obra) \
+        .execute()
+
+    return response.data
+
+

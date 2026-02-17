@@ -38,6 +38,9 @@ with st.form("form_hoja"):
 
     num_pedido = st.number_input("Número de pedido", min_value=1, step=1)
 
+    # NUEVO CAMPO
+    producto = st.text_input("Producto o servicio solicitado")
+
     # Obras
     obras = obtener_obras_combo()
     obras_dict = {o["nombre_obra"]: o for o in obras}
@@ -194,6 +197,7 @@ if generar:
         "nombre_resi": nombre_resi,
         "nombre_super": nombre_super,
         "responsable_control": responsable_control,
+        "producto": producto,
         "fecha_actual": fecha_actual
     }
 
@@ -208,7 +212,7 @@ if generar:
         st.download_button(
             "📥 Descargar Hoja de Coordinación",
             f,
-            file_name=f"HC_{numero_doc_fmt}.docx",
+            file_name=f"HOJA DE COORDINACION N° {numero_doc_fmt}  {producto}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 

@@ -1,13 +1,13 @@
 import streamlit as st
 import os
 from src.db.supabase_client import *
-from src.services.word_generator import generar_validacion
+from src.services.word_generator import generar_conformidad
 from src.utils.formatters import format_4_digits, format_6_digits
 
 
-st.set_page_config(page_title="Validacion", layout="wide")
+st.set_page_config(page_title="Conformidad", layout="wide")
 
-st.title("📄 Generar Hoja de Coordinación - Validación")
+st.title("📄 Generar Informe - Conformidad")
 st.divider()
 
 
@@ -29,7 +29,7 @@ doc_sel = st.selectbox(
 
 with st.form("form_hoja"):
 
-    numero_doc = st.number_input("Número de hoja de coordinación", min_value=1, step=1)
+    numero_doc = st.number_input("Número de Informe - validación ", min_value=1, step=1)
 
     tipo_pedido = st.selectbox(
         "Tipo de pedido",
@@ -49,6 +49,15 @@ with st.form("form_hoja"):
         "Seleccionar obra",
         list(obras_dict.keys())
     )
+
+    # NUEVOS CAMPOS DEL PROVEEDOR
+
+    st.markdown("### 🏢 Datos del proveedor")
+
+    nom_prov = st.text_input("Nombre del proveedor")
+    num_ruc = st.text_input("RUC (11 dígitos)", max_chars=11)
+    monto = st.number_input("Monto", min_value=0.0, step=0.01)
+
 
     #previa
 
@@ -198,7 +207,11 @@ if generar:
         "nombre_super": nombre_super,
         "responsable_control": responsable_control,
         "producto": producto,
-        "fecha_actual": fecha_actual
+        "fecha_actual": fecha_actual,
+        "nom_prov": nom_prov,
+        "num_ruc": num_ruc,
+        "monto": f"{monto:,.2f}"
+
     }
 
     output_file = f"generated_docs/HC_{numero_doc_fmt}.docx"
@@ -206,13 +219,13 @@ if generar:
     if not os.path.exists("generated_docs"):
         os.makedirs("generated_docs")
 
-    generar_validacion(contexto, output_file)
+    generar_conformidad(contexto, output_file)
 
     with open(output_file, "rb") as f:
         st.download_button(
-            "📥 Descargar Hoja de Coordinación",
+            "📥 Descargar INFORME",
             f,
-            file_name=f"HOJA DE COORDINACION N° {numero_doc_fmt}  {producto}.docx",
+            file_name=f"INFORME N° {numero_doc_fmt}  {producto}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 

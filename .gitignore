@@ -1,2 +1,3 @@
 venv_infra/
 .streamlit/secrets.toml
+generated_docs/

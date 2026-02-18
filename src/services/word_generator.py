@@ -9,3 +9,13 @@ def generar_validacion(contexto, output_path):
     doc.save(output_path)
 
     return output_path
+
+
+def generar_conformidad(contexto, output_path):
+    template_path = "templates/informe_conformidad.docx"
+
+    doc = DocxTemplate(template_path)
+    doc.render(contexto)
+    doc.save(output_path)
+
+    return output_path

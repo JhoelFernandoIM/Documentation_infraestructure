@@ -1,13 +1,13 @@
 import streamlit as st
 import os
 from src.db.supabase_client import *
-from src.services.word_generator import generar_validacion
+from src.services.word_generator import generar_requerimiento
 from src.utils.formatters import format_4_digits, format_6_digits
 
 
-st.set_page_config(page_title="Validacion", layout="wide")
+st.set_page_config(page_title="Requerimiento", layout="wide")
 
-st.title("📄 Generar Hoja de Coordinación - Validación")
+st.title("📄 Generar Requerimiento")
 st.divider()
 
 
@@ -36,7 +36,7 @@ doc_editable = st.text_input(
 
 with st.form("form_hoja"):
 
-    numero_doc = st.number_input("Número de hoja de coordinación", min_value=1, step=1)
+    numero_doc = st.number_input("Número de Requerimiento ", min_value=1, step=1)
 
     tipo_pedido = st.selectbox(
         "Tipo de pedido",
@@ -56,7 +56,6 @@ with st.form("form_hoja"):
         "Seleccionar obra",
         list(obras_dict.keys())
     )
-
     #previa
 
 # Vista previa automática del personal
@@ -126,6 +125,61 @@ with st.form("form_hoja"):
 # ==============================
 
 if generar:
+
+    #nuevo
+    doc_data = doc_dict[doc_sel]
+
+    fecha_doc = doc_data.get("fecha_registro")
+
+    from datetime import datetime
+
+    fecha_recepcion = ""
+
+    if fecha_doc:
+        fecha_dt = datetime.strptime(fecha_doc, "%Y-%m-%d")
+
+        MESES_ES = {
+            1: "enero", 2: "febrero", 3: "marzo",
+            4: "abril", 5: "mayo", 6: "junio",
+            7: "julio", 8: "agosto", 9: "septiembre",
+            10: "octubre", 11: "noviembre", 12: "diciembre"
+        }
+
+        fecha_recepcion = f"{fecha_dt.day} de {MESES_ES[fecha_dt.month]} de {fecha_dt.year}"
+
+
+    obra_full = obtener_obra_por_id(id_obra)
+
+    reso_expediente = obra_full.get("resolucion_aprob_exp", "")
+    fecha_reso_expediente = obra_full.get("fecha_r_expediente", "")
+
+    reso_ejecucion = obra_full.get("resolucion_aprob_ejec", "")
+    fecha_reso_ejecucion = obra_full.get("fecha_r_ejecucion", "")
+
+    def formatear_fecha_es(fecha_str):
+        if not fecha_str:
+            return ""
+
+        fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+
+        MESES_ES = {
+            1: "enero", 2: "febrero", 3: "marzo",
+            4: "abril", 5: "mayo", 6: "junio",
+            7: "julio", 8: "agosto", 9: "septiembre",
+            10: "octubre", 11: "noviembre", 12: "diciembre"
+        }
+
+        return f"{fecha_dt.day} de {MESES_ES[fecha_dt.month]} de {fecha_dt.year}"
+
+    fecha_reso_expediente = formatear_fecha_es(fecha_reso_expediente)
+    fecha_reso_ejecucion = formatear_fecha_es(fecha_reso_ejecucion)
+
+    meta = obra_full.get("meta", "")
+    num_meta = str(meta).zfill(4) if meta else "0000"
+
+
+
+    #nuevo
 
     obra_data = obras_dict[nombre_obra]
     id_obra = obra_data["id_obra"]
@@ -205,21 +259,28 @@ if generar:
         "nombre_super": nombre_super,
         "responsable_control": responsable_control,
         "producto": producto,
-        "fecha_actual": fecha_actual
+        "fecha_actual": fecha_actual,
+        "fecha_recepcion": fecha_recepcion,
+        #nuevo
+        "reso_expediente": reso_expediente,
+        "fecha_reso_expediente": fecha_reso_expediente,
+        "reso_ejecucion": reso_ejecucion,
+        "fecha_reso_ejecucion": fecha_reso_ejecucion,
+        "num_meta": num_meta
     }
 
-    output_file = f"generated_docs/HC_{numero_doc_fmt}.docx"
+    output_file = f"generated_docs/REQ_{numero_doc_fmt}.docx"
 
     if not os.path.exists("generated_docs"):
         os.makedirs("generated_docs")
 
-    generar_validacion(contexto, output_file)
+    generar_requerimiento(contexto, output_file)
 
     with open(output_file, "rb") as f:
         st.download_button(
-            "📥 Descargar Hoja de Coordinación",
+            "📥 Descargar REQUERIMIENTO",
             f,
-            file_name=f"HOJA DE COORDINACION N° {numero_doc_fmt}  {producto}.docx",
+            file_name=f"REQUERIMIENTO N° {numero_doc_fmt}  {producto}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 

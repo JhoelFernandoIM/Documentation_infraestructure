@@ -153,3 +153,16 @@ def obtener_personal_por_obra(id_obra):
     return response.data
 
 
+#para modulo requerimiento
+
+def obtener_obra_por_id(id_obra):
+    supabase = get_supabase_client()
+    res = supabase.table("obra") \
+        .select("*") \
+        .eq("id_obra", id_obra) \
+        .single() \
+        .execute()
+
+    return res.data
+
+

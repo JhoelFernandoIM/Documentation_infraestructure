@@ -20,9 +20,16 @@ doc_dict = {
     for d in documentos
 }
 
+#nuevo
 doc_sel = st.selectbox(
     "Seleccionar documento de referencia",
     list(doc_dict.keys())
+)
+
+# Permitir editar el nombre
+doc_editable = st.text_input(
+    "Editar nombre del documento (opcional)",
+    value=doc_sel
 )
 
 #formulario
@@ -202,7 +209,7 @@ if generar:
         "num_pedido": num_pedido_fmt,
         "nombre_obra": nombre_obra,
         "num_cui": obra_data["cui"],
-        "nombre_doc": doc_sel,
+        "nombre_doc": doc_editable,
         "nombre_resi": nombre_resi,
         "nombre_super": nombre_super,
         "responsable_control": responsable_control,

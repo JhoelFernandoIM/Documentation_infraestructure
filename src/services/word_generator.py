@@ -19,3 +19,12 @@ def generar_conformidad(contexto, output_path):
     doc.save(output_path)
 
     return output_path
+
+def generar_requerimiento(contexto, output_path):
+    template_path = "templates/requerimiento.docx"
+
+    doc = DocxTemplate(template_path)
+    doc.render(contexto)
+    doc.save(output_path)
+
+    return output_path
